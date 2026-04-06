@@ -1,0 +1,66 @@
+{
+  "Name": "OrthancDocker",
+  "HttpServerEnabled": true,
+  "DicomCheckModalityHost": true,
+  "DicomModalities": {
+      "MCPSCU": {
+          "AET": "MCPSCU",
+          "Host": "host.docker.internal",
+          "Port": 11112
+      },
+      "RADIANT": {
+          "AET": "RADIANT",
+          "Host": "host.docker.internal",
+          "Port": 11112
+      }
+  },
+  "DicomServerEnabled": true,
+  "DicomAet": "ORTHANC",
+  "DicomPort": 4242,
+  "DicomCheckCalledAet": false,
+  "DicomAlwaysAllowEcho": true,
+  "DicomAlwaysAllowFind": true,
+  "DicomAlwaysAllowMove": true,
+  "DicomAlwaysAllowStore": true,
+  "HttpPort": 8042,
+  "RemoteAccessAllowed": true,
+  "AuthenticationEnabled": false,
+  "RegisteredUsers": {
+    "admin": "admin"
+  },
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "StorageCompression": true,
+  "OverwriteInstances": true,
+  "Plugins": [
+    "/usr/share/orthanc/plugins/"
+  ],
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/"
+  },
+  "OrthancExplorer2": {
+    "Enable": true,
+    "IsDefaultOrthancUI": true
+  },
+  "OHIF": {
+    "Enable": true,
+    "DataSource": "dicom-web",
+    "RouterBasename": "/ohif/"
+  },
+  "Python": {
+    "Path": "/etc/orthanc/python/startup.py",
+    "Verbose": false
+  },
+  "Gdcm": {
+    "Throttling": 4,
+    "RestrictTransferSyntaxes": [
+      "1.2.840.10008.1.2.4.90",
+      "1.2.840.10008.1.2.4.91",
+      "1.2.840.10008.1.2.4.92",
+      "1.2.840.10008.1.2.4.93"
+    ]
+  },
+  "Housekeeper": {
+    "Enable": true
+  }
+}

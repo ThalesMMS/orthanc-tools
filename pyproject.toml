@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orthanc-tools"
+version = "0.1.0"
+description = "Deploy, operations, sync, and backup tooling for Orthanc."
+readme = "README.md"
+requires-python = ">=3.10"
+license-files = ["LICENSE"]
+keywords = ["orthanc", "dicom", "pacs", "medical-imaging", "backup", "docker"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: System :: Systems Administration",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/ThalesMMS/orthanc-tools"
+Repository = "https://github.com/ThalesMMS/orthanc-tools"
+Documentation = "https://github.com/ThalesMMS/orthanc-tools#readme"
+Issues = "https://github.com/ThalesMMS/orthanc-tools/issues"
+Security = "https://github.com/ThalesMMS/orthanc-tools/blob/main/.github/SECURITY.md"
+
+[project.scripts]
+orthanc-tools = "orthanc_tools.cli:main"
+
+[project.optional-dependencies]
+rich = ["rich>=13"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

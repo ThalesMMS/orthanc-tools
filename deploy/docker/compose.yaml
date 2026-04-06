@@ -1,0 +1,17 @@
+services:
+  orthanc:
+    image: orthancteam/orthanc:latest
+    container_name: orthanc
+    platform: linux/amd64
+    restart: unless-stopped
+    ports:
+      - "8042:8042"
+      - "4242:4242"
+    environment:
+      VERBOSE_STARTUP: "true"  # útil para debug; pode ser removido depois
+    volumes:
+      - ./orthanc-db:/var/lib/orthanc/db
+      - ./orthanc/config/orthanc.json:/etc/orthanc/orthanc.json:ro
+      - ./orthanc/python:/etc/orthanc/python:ro
+      - ./orthanc/plugins/ohif/libOrthancOHIF.so:/usr/share/orthanc/plugins/libOrthancOHIF.so:ro
+      - ./orthanc/plugins/ohif/dist:/usr/share/orthanc/plugins/dist:ro

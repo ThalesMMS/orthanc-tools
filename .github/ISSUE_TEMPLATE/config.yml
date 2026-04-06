@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Support
+    url: ./SUPPORT.md
+    about: Read support guidance before opening a general help issue.
+  - name: Security reporting
+    url: ./SECURITY.md
+    about: Report sensitive vulnerabilities through GitHub security reporting, not public issues.

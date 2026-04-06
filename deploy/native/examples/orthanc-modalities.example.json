@@ -1,0 +1,42 @@
+{
+  "VIEWER-LAN-A": {
+    "AET": "REMOTE_A",
+    "Host": "192.0.2.10",
+    "Port": 11112,
+    "AllowEcho": true,
+    "AllowFind": true,
+    "AllowMove": true,
+    "AllowGet": true,
+    "AllowStore": true
+  },
+  "VIEWER-LAN-B": {
+    "AET": "REMOTE_B",
+    "Host": "192.0.2.20",
+    "Port": 4007,
+    "AllowEcho": true,
+    "AllowFind": true,
+    "AllowMove": true,
+    "AllowGet": true,
+    "AllowStore": true
+  },
+  "VIEWER-WAN-A": {
+    "AET": "REMOTE_A",
+    "Host": "198.51.100.10",
+    "Port": 11112,
+    "AllowEcho": true,
+    "AllowFind": true,
+    "AllowMove": true,
+    "AllowGet": true,
+    "AllowStore": true
+  },
+  "VIEWER-WAN-B": {
+    "AET": "REMOTE_B",
+    "Host": "203.0.113.20",
+    "Port": 4007,
+    "AllowEcho": true,
+    "AllowFind": true,
+    "AllowMove": true,
+    "AllowGet": true,
+    "AllowStore": true
+  }
+}

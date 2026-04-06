@@ -1,0 +1,28 @@
+.DS_Store
+
+# Runtime/data
+orthanc-db/
+**/orthanc-db/
+backup/
+*.part
+
+# State
+*.state/
+*.state
+**/.orthanc-export-state/
+**/.orthanc-remote-zip-backup-state/
+orthanc-backfill-state/
+
+# Logs
+*.log
+logs/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local automation / secrets
+.env
+.env.*
+scripts/automation/*.local.*
