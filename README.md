@@ -1,6 +1,15 @@
 # orthanc-tools
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+
 `orthanc-tools` reúne deploy, operação e workflows de sincronização e backup para Orthanc.
+
+Orthanc deployment, sync, PACS mirroring, and ZIP backup toolkit for Docker and native Ubuntu.
+
+**Keywords:** Orthanc, DICOM, DICOMweb, PACS, Docker, Ubuntu, PostgreSQL, backup, sync, ZIP export.
+
+**Quick links:** [Docker quickstart](docs/quickstart/docker.md) · [Native Ubuntu quickstart](docs/quickstart/native-ubuntu.md) · [Workflow docs](docs/workflows) · [Operations docs](docs/operations)
 
 O repositório é voltado a operadores e desenvolvedores que precisam:
 
@@ -101,6 +110,12 @@ Do not use these defaults unchanged for longer-lived environments. Review and ha
 - Workflow docs: [`docs/workflows`](docs/workflows)
 - Operations: [`docs/operations`](docs/operations)
 - Networking notes: [`docs/networking/proxmox-nat-workaround.md`](docs/networking/proxmox-nat-workaround.md)
+
+## Related ThalesMMS Projects
+
+- [`Dicom-Tools`](https://github.com/ThalesMMS/Dicom-Tools): unified UI for testing multiple DICOM libraries and toolchains.
+- [`OsiriX-Backup-Plugin`](https://github.com/ThalesMMS/OsiriX-Backup-Plugin): OsiriX/Horos backup plugin with integrity checks and remote PACS delivery.
+- [`DICOM-Decoder`](https://github.com/ThalesMMS/DICOM-Decoder): Swift DICOM decoding core for metadata and pixel buffers.
 
 ## Community
 
