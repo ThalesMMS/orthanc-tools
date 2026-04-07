@@ -111,7 +111,7 @@ Do not use these defaults unchanged for longer-lived environments. Review and ha
 - Operations: [`docs/operations`](docs/operations)
 - Networking notes: [`docs/networking/proxmox-nat-workaround.md`](docs/networking/proxmox-nat-workaround.md)
 
-## Related ThalesMMS Projects
+## Related Projects
 
 - [`Dicom-Tools`](https://github.com/ThalesMMS/Dicom-Tools): unified UI for testing multiple DICOM libraries and toolchains.
 - [`OsiriX-Backup-Plugin`](https://github.com/ThalesMMS/OsiriX-Backup-Plugin): OsiriX/Horos backup plugin with integrity checks and remote PACS delivery.
