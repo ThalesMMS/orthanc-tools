@@ -1,13 +1,13 @@
 # Workflow: Backup Remote to ZIP
 
-`orthanc-backfill-export-by-date.py` combina backfill remoto por data com exportação final em ZIP. O Orthanc local funciona só como staging store temporário.
+`orthanc-backfill-export-by-date.py` combines remote backfill by date with final ZIP export. The local Orthanc instance acts only as a temporary staging store.
 
 ## Entry points
 
-- canônico: `python3 -m orthanc_tools backup-remote-to-zip`
-- wrapper estável: `./scripts/workflows/orthanc-backfill-export-by-date.py`
+- canonical: `python3 -m orthanc_tools backup-remote-to-zip`
+- stable wrapper: `./scripts/workflows/orthanc-backfill-export-by-date.py`
 
-## Exemplo
+## Example
 
 ```bash
 python3 -m orthanc_tools backup-remote-to-zip \
@@ -19,7 +19,7 @@ python3 -m orthanc_tools backup-remote-to-zip \
   --state-dir /data/backup/.orthanc-remote-zip-backup-state
 ```
 
-## Quando usar
+## When to use
 
-- backup remoto direto para disco em um ZIP por estudo
-- retenção local mínima no Orthanc
+- direct remote backup to disk with one ZIP per study
+- minimal local retention in Orthanc

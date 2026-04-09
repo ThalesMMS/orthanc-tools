@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 
-`orthanc-tools` reúne deploy, operação e workflows de sincronização e backup para Orthanc.
+`orthanc-tools` brings together deployment, operations, and sync/backup workflows for Orthanc.
 
 Orthanc deployment, sync, PACS mirroring, and ZIP backup toolkit for Docker and native Ubuntu.
 
@@ -11,22 +11,22 @@ Orthanc deployment, sync, PACS mirroring, and ZIP backup toolkit for Docker and 
 
 **Quick links:** [Docker quickstart](docs/quickstart/docker.md) · [Native Ubuntu quickstart](docs/quickstart/native-ubuntu.md) · [Workflow docs](docs/workflows) · [Operations docs](docs/operations)
 
-O repositório é voltado a operadores e desenvolvedores que precisam:
+The repository is aimed at operators and developers who need to:
 
-- subir um Orthanc rapidamente em Docker para testes locais
-- instalar Orthanc nativo em Ubuntu com PostgreSQL
-- espelhar um PACS remoto em Orthanc local
-- fazer backfill remoto por data
-- gerar ZIPs por estudo a partir de um PACS remoto ou de um Orthanc já populado
+- bring up Orthanc quickly in Docker for local testing
+- install native Orthanc on Ubuntu with PostgreSQL
+- mirror a remote PACS into local Orthanc
+- backfill remote studies by date
+- generate one ZIP per study from a remote PACS or an already populated Orthanc instance
 
 ## What Is Included
 
-- `deploy/docker`: stack Docker com Orthanc, Orthanc Explorer 2, DICOMweb, OHIF e plugin Python
-- `deploy/native`: instalador e purge para Ubuntu 24.04
-- `scripts/orthanc`: helpers operacionais para start, stop, restart, diagnose e limpeza
-- `scripts/workflows`: entrypoints nomeados para sync, backfill e export
-- `src/orthanc_tools`: CLI unificada e lógica Python compartilhada
-- `docs/`: quickstarts, workflows, operações e networking
+- `deploy/docker`: Docker stack with Orthanc, Orthanc Explorer 2, DICOMweb, OHIF, and the Python plugin
+- `deploy/native`: installer and purge scripts for Ubuntu 24.04
+- `scripts/orthanc`: operational helpers for start, stop, restart, diagnose, and cleanup
+- `scripts/workflows`: named entry points for sync, backfill, and export
+- `src/orthanc_tools`: unified CLI and shared Python logic
+- `docs/`: quickstarts, workflows, operations, and networking notes
 
 ## Getting Started
 

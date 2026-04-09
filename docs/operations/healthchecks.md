@@ -1,13 +1,13 @@
 # Operations: Healthchecks
 
-Helpers canônicos:
+Canonical helpers:
 
 - `./scripts/orthanc/orthanc-healthcheck.sh`
 - `./scripts/orthanc/orthanc-start.sh`
 - `./scripts/orthanc/orthanc-stop.sh`
 - `./scripts/orthanc/orthanc-restart.sh`
 
-## Exemplo
+## Example
 
 ```bash
 sudo ./scripts/orthanc/orthanc-healthcheck.sh

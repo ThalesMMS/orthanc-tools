@@ -1,19 +1,19 @@
 # Workflow: Sync Remote
 
-`orthanc-sync-remote.py` espelha um PACS remoto em Orthanc local e tenta corrigir deriva entre os lados.
+`orthanc-sync-remote.py` mirrors a remote PACS into the local Orthanc instance and tries to correct drift between both sides.
 
 ## Entry points
 
-- canônico: `python3 -m orthanc_tools sync-remote`
-- wrapper estável: `./scripts/workflows/orthanc-sync-remote.py`
+- canonical: `python3 -m orthanc_tools sync-remote`
+- stable wrapper: `./scripts/workflows/orthanc-sync-remote.py`
 
-## Exemplo
+## Example
 
 ```bash
 python3 -m orthanc_tools sync-remote --remote OSIRIX-LAN --yes
 ```
 
-## Quando usar
+## When to use
 
-- espelhamento fiel de um modality remoto
-- sincronização contínua ou reparo de drift
+- faithful mirroring of a remote modality
+- continuous synchronization or drift repair

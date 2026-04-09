@@ -1,13 +1,13 @@
 # Networking: Proxmox NAT Workaround
 
-Os scripts em `scripts/networking/` são workarounds de ambiente, não parte do fluxo central do produto.
+The scripts in `scripts/networking/` are environment-specific workarounds, not part of the main product workflow.
 
 ## Guest VM
 
 - `./scripts/networking/vm-network-guest-fix.sh`
 
-## Host Proxmox
+## Proxmox host
 
 - `./scripts/networking/proxmox-vm-nat-fix.sh`
 
-Use somente quando houver problema real de conectividade entre VM e host e remova quando o workaround deixar de ser necessário.
+Use them only when there is a real connectivity problem between the VM and the host, and remove them when the workaround is no longer needed.

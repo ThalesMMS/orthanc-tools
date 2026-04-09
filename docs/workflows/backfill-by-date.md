@@ -1,13 +1,13 @@
 # Workflow: Backfill by Date
 
-`orthanc-backfill-by-date.py` preenche o Orthanc local dia a dia a partir de um PACS remoto, com estado resumível.
+`orthanc-backfill-by-date.py` fills the local Orthanc instance day by day from a remote PACS, with resumable state.
 
 ## Entry points
 
-- canônico: `python3 -m orthanc_tools backfill-by-date`
-- wrapper estável: `./scripts/workflows/orthanc-backfill-by-date.py`
+- canonical: `python3 -m orthanc_tools backfill-by-date`
+- stable wrapper: `./scripts/workflows/orthanc-backfill-by-date.py`
 
-## Exemplo
+## Example
 
 ```bash
 python3 -m orthanc_tools backfill-by-date \
@@ -17,7 +17,7 @@ python3 -m orthanc_tools backfill-by-date \
   --remote-port 4242
 ```
 
-## Quando usar
+## When to use
 
-- popular o Orthanc local como acervo operacional
-- retomar uma carga longa a partir do ponto salvo
+- populate the local Orthanc instance as an operational archive
+- resume a long import from the saved point

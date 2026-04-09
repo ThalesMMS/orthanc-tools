@@ -1,10 +1,10 @@
 # Workflows
 
-| Script | Usa Orthanc local? | Origem | Saída | Quando usar |
+| Script | Uses local Orthanc? | Source | Output | When to use |
 |---|---:|---|---|---|
-| `orthanc-sync-remote.py` | Sim | PACS remoto | Orthanc espelhado | Mirror fiel |
-| `orthanc-backfill-by-date.py` | Sim | PACS remoto | Orthanc preenchido | Backfill operacional |
-| `orthanc-backfill-export-by-date.py` | Sim, como staging | PACS remoto | ZIP por estudo | Backup remoto para disco |
-| `orthanc-export-local-by-date.py` | Sim | Orthanc local | ZIP por estudo | Exportar acervo já local |
+| `orthanc-sync-remote.py` | Yes | Remote PACS | Mirrored Orthanc | Faithful mirror |
+| `orthanc-backfill-by-date.py` | Yes | Remote PACS | Filled Orthanc | Operational backfill |
+| `orthanc-backfill-export-by-date.py` | Yes, as staging | Remote PACS | ZIP per study | Remote backup to disk |
+| `orthanc-export-local-by-date.py` | Yes | Local Orthanc | ZIP per study | Export an already local archive |
 
-Entry point canônico: `python3 -m orthanc_tools <subcomando>`.
+Canonical entry point: `python3 -m orthanc_tools <subcommand>`.
