@@ -1,13 +1,13 @@
 # Workflow: Export Local to ZIP
 
-`orthanc-export-local-by-date.py` exporta estudos que já existem no Orthanc local em um ZIP por estudo.
+`orthanc-export-local-by-date.py` exports studies that already exist in the local Orthanc instance into one ZIP per study.
 
 ## Entry points
 
-- canônico: `python3 -m orthanc_tools export-local-to-zip`
-- wrapper estável: `./scripts/workflows/orthanc-export-local-by-date.py`
+- canonical: `python3 -m orthanc_tools export-local-to-zip`
+- stable wrapper: `./scripts/workflows/orthanc-export-local-by-date.py`
 
-## Exemplo
+## Example
 
 ```bash
 python3 -m orthanc_tools export-local-to-zip \
@@ -16,7 +16,7 @@ python3 -m orthanc_tools export-local-to-zip \
   --backup-dir ~/backup
 ```
 
-## Quando usar
+## When to use
 
-- exportar acervo já local
-- gerar ZIPs sem depender de um PACS remoto
+- export an already local archive
+- generate ZIPs without depending on a remote PACS

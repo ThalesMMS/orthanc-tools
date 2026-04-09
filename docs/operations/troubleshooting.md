@@ -1,16 +1,16 @@
 # Operations: Troubleshooting
 
-## REST não responde
+## REST does not respond
 
-- rode `./scripts/orthanc/orthanc-diagnose-rest.sh`
-- valide credenciais em `/etc/orthanc/credentials.json`
+- run `./scripts/orthanc/orthanc-diagnose-rest.sh`
+- validate credentials in `/etc/orthanc/credentials.json`
 
-## Orthanc sobe, mas ainda não está pronto
+## Orthanc starts, but is not ready yet
 
-- use `./scripts/orthanc/orthanc-start.sh` ou `./scripts/orthanc/orthanc-restart.sh`
-- esses helpers aguardam o healthcheck antes de retornar sucesso
+- use `./scripts/orthanc/orthanc-start.sh` or `./scripts/orthanc/orthanc-restart.sh`
+- these helpers wait for the healthcheck before returning success
 
-## Sync/backfill falha em um estudo
+## Sync/backfill fails on one study
 
-- rode o workflow de novo; o estado é resumível
-- verifique logs no diretório de estado configurado
+- run the workflow again; the state is resumable
+- check logs in the configured state directory

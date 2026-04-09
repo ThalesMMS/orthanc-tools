@@ -1,34 +1,34 @@
 # Native Ubuntu
 
-Instalação nativa de Orthanc em Ubuntu com PostgreSQL local.
+Native Orthanc installation on Ubuntu with local PostgreSQL.
 
-## Arquivos canônicos
+## Canonical files
 
 - `deploy/native/install-orthanc-native.sh`
 - `deploy/native/purge-orthanc-native.sh`
 - `deploy/native/examples/orthanc-modalities.example.json`
 - `scripts/orthanc/orthanc-*.sh`
 
-## Instalar
+## Install
 
 ```bash
 sudo ./deploy/native/install-orthanc-native.sh
 ```
 
-## Validar
+## Validate
 
 ```bash
 sudo ./scripts/orthanc/orthanc-healthcheck.sh
 ```
 
-## Remover
+## Remove
 
 ```bash
 sudo ./deploy/native/purge-orthanc-native.sh
 ```
 
-## Observações
+## Notes
 
-- o instalador continua instalando helpers em `/usr/local/sbin`
-- a configuração continua em `/etc/orthanc`
-- a árvore do repositório mudou; o layout instalado no host não mudou
+- the installer still places helpers in `/usr/local/sbin`
+- the configuration still lives in `/etc/orthanc`
+- the repository tree changed; the layout installed on the host did not change

@@ -1,10 +1,10 @@
 # Operations: Delete All Studies
 
-Helper canônico:
+Canonical helper:
 
 ```bash
 ./scripts/orthanc/orthanc-delete-all-studies.sh --dry-run
 ./scripts/orthanc/orthanc-delete-all-studies.sh --yes
 ```
 
-Use isso apenas para limpeza operacional controlada do Orthanc local.
+Use this only for controlled operational cleanup of the local Orthanc instance.

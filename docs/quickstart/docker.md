@@ -1,11 +1,11 @@
 # Quickstart: Docker
 
-## Pré-requisitos
+## Prerequisites
 
-- Docker com Compose v2 (`docker compose`)
-- Portas `8042` e `4242` livres
+- Docker with Compose v2 (`docker compose`)
+- Ports `8042` and `4242` available
 
-## Subir a stack
+## Start the stack
 
 ```bash
 docker compose -f deploy/docker/compose.yaml up -d
@@ -17,7 +17,7 @@ docker compose -f deploy/docker/compose.yaml up -d
 - OHIF: `http://localhost:8042/ohif/`
 - DICOMweb: `http://localhost:8042/dicom-web/studies`
 
-## Arquivos principais
+## Main files
 
 - `deploy/docker/compose.yaml`
 - `deploy/docker/orthanc/config/orthanc.json`
