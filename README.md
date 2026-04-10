@@ -11,6 +11,28 @@ Orthanc deployment, sync, PACS mirroring, and ZIP backup toolkit for Docker and 
 
 **Quick links:** [Docker quickstart](docs/quickstart/docker.md) · [Native Ubuntu quickstart](docs/quickstart/native-ubuntu.md) · [Workflow docs](docs/workflows) · [Operations docs](docs/operations)
 
+## Start Here in 30 Seconds
+
+| If you want to... | Start with | What you get |
+|---|---|---|
+| Run a local Orthanc stack with a web UI | `docker compose -f deploy/docker/compose.yaml up -d` | Orthanc Explorer 2, OHIF, and DICOMweb on `localhost` |
+| Install Orthanc natively on Ubuntu 24.04 | `sudo ./deploy/native/install-orthanc-native.sh` | Native Orthanc + PostgreSQL baseline |
+| Run sync, backfill, or ZIP export workflows | `python3 -m orthanc_tools --help` | Unified CLI entry point for the repo workflows |
+
+### Fastest path: local Docker stack
+
+For local testing, the quickest way to see the project working is:
+
+```bash
+docker compose -f deploy/docker/compose.yaml up -d
+```
+
+Then open:
+
+- Orthanc Explorer 2: `http://localhost:8042/ui/app/`
+- OHIF: `http://localhost:8042/ohif/`
+- DICOMweb studies endpoint: `http://localhost:8042/dicom-web/studies`
+
 The repository is aimed at operators and developers who need to:
 
 - bring up Orthanc quickly in Docker for local testing
