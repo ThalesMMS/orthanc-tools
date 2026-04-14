@@ -4,23 +4,23 @@ IFS=$'\n\t'
 
 usage() {
   cat <<'USAGE'
-Uso:
-  ./orthanc-delete-all-studies.sh [opcoes]
+Usage:
+  ./orthanc-delete-all-studies.sh [options]
 
-Apaga todos os estudos armazenados no Orthanc usando a API REST.
+Delete all studies stored in Orthanc using the REST API.
 
-Opcoes:
-  --base-url URL             URL base do Orthanc. Ex.: http://127.0.0.1:8042
-  --user USUARIO             Usuario HTTP do Orthanc
-  --password SENHA           Senha HTTP do Orthanc
-  --config-dir DIR           Diretorio de configuracao. Padrao: /etc/orthanc
-  --orthanc-config ARQUIVO   Caminho explicito para o orthanc.json
-  --credentials-config ARQ   Caminho explicito para o credentials.json
-  --dry-run                  Apenas mostra quantos estudos seriam apagados
-  --yes                      Nao pede confirmacao interativa
-  -h, --help                 Mostra esta ajuda
+Options:
+  --base-url URL             Orthanc base URL, for example http://127.0.0.1:8042
+  --user USER                Orthanc HTTP user
+  --password PASSWORD        Orthanc HTTP password
+  --config-dir DIR           Configuration directory. Default: /etc/orthanc
+  --orthanc-config FILE      Explicit path to orthanc.json
+  --credentials-config FILE  Explicit path to credentials.json
+  --dry-run                  Only show how many studies would be deleted
+  --yes                      Skip the interactive confirmation
+  -h, --help                 Show this help text
 
-Variaveis de ambiente equivalentes:
+Equivalent environment variables:
   ORTHANC_BASE_URL
   ORTHANC_ADMIN_USER
   ORTHANC_ADMIN_PASSWORD
@@ -28,20 +28,20 @@ Variaveis de ambiente equivalentes:
   ORTHANC_MAIN_CONFIG_FILE
   ORTHANC_CREDENTIALS_CONFIG_FILE
 
-Exemplos:
+Examples:
   sudo ./orthanc-delete-all-studies.sh --dry-run
   sudo ./orthanc-delete-all-studies.sh --yes
   ./orthanc-delete-all-studies.sh \
     --base-url http://127.0.0.1:8042 \
     --user admin \
-    --password 'sua-senha' \
+    --password 'your-password' \
     --yes
 USAGE
 }
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
-    echo "Comando obrigatorio nao encontrado: $1" >&2
+    echo "Required command not found: $1" >&2
     exit 1
   }
 }
@@ -61,32 +61,32 @@ ORTHANC_ADMIN_PASSWORD="${ORTHANC_ADMIN_PASSWORD:-}"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --base-url)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --base-url" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --base-url" >&2; exit 1; }
       ORTHANC_BASE_URL="$2"
       shift 2
       ;;
     --user)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --user" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --user" >&2; exit 1; }
       ORTHANC_ADMIN_USER="$2"
       shift 2
       ;;
     --password)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --password" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --password" >&2; exit 1; }
       ORTHANC_ADMIN_PASSWORD="$2"
       shift 2
       ;;
     --config-dir)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --config-dir" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --config-dir" >&2; exit 1; }
       CONFIG_DIR="$2"
       shift 2
       ;;
     --orthanc-config)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --orthanc-config" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --orthanc-config" >&2; exit 1; }
       MAIN_CONFIG_FILE="$2"
       shift 2
       ;;
     --credentials-config)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --credentials-config" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --credentials-config" >&2; exit 1; }
       CREDENTIALS_CONFIG_FILE="$2"
       shift 2
       ;;
@@ -103,7 +103,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     *)
-      echo "Opcao invalida: $1" >&2
+      echo "Invalid option: $1" >&2
       usage >&2
       exit 1
       ;;
@@ -133,12 +133,12 @@ with open(sys.argv[2], "r", encoding="utf-8") as handle:
 
 users = cred_cfg.get("RegisteredUsers", {})
 if not isinstance(users, dict) or not users:
-    raise SystemExit("RegisteredUsers ausente ou vazio em credentials.json.")
+    raise SystemExit("RegisteredUsers is missing or empty in credentials.json.")
 
 user = next(iter(users))
 password = users[user]
 if not isinstance(password, str):
-    raise SystemExit("Senha do Orthanc invalida em credentials.json.")
+    raise SystemExit("Invalid Orthanc password in credentials.json.")
 
 port = main_cfg.get("HttpPort", 8042)
 print(user)
@@ -148,7 +148,7 @@ PY
   )
 
   if [[ ${#CFG[@]} -lt 3 ]]; then
-    echo "Nao foi possivel interpretar os arquivos de configuracao do Orthanc." >&2
+    echo "Could not parse the Orthanc configuration files." >&2
     exit 1
   fi
 
@@ -170,7 +170,7 @@ fi
 ORTHANC_BASE_URL="${ORTHANC_BASE_URL:-http://127.0.0.1:8042}"
 
 if [[ -z "$ORTHANC_ADMIN_USER" || -z "$ORTHANC_ADMIN_PASSWORD" ]]; then
-  echo "Credenciais nao informadas. Use --user/--password ou exporte ORTHANC_ADMIN_USER e ORTHANC_ADMIN_PASSWORD." >&2
+  echo "Credentials not provided. Use --user/--password or export ORTHANC_ADMIN_USER and ORTHANC_ADMIN_PASSWORD." >&2
   exit 1
 fi
 
@@ -179,8 +179,8 @@ api_get() {
   local response
   if ! response="$(curl -fsS --max-time 60 -u "${ORTHANC_ADMIN_USER}:${ORTHANC_ADMIN_PASSWORD}" \
     "${ORTHANC_BASE_URL}${path}")"; then
-    echo "Falha ao acessar ${ORTHANC_BASE_URL}${path}." >&2
-    echo "Verifique se o Orthanc esta em execucao e se a URL/credenciais estao corretas." >&2
+    echo "Failed to access ${ORTHANC_BASE_URL}${path}." >&2
+    echo "Check whether Orthanc is running and whether the URL and credentials are correct." >&2
     exit 1
   fi
 
@@ -191,7 +191,7 @@ api_delete() {
   local path="$1"
   if ! curl -fsS --max-time 60 -X DELETE -u "${ORTHANC_ADMIN_USER}:${ORTHANC_ADMIN_PASSWORD}" \
     "${ORTHANC_BASE_URL}${path}" >/dev/null; then
-    echo "Falha ao apagar o recurso ${ORTHANC_BASE_URL}${path}." >&2
+    echo "Failed to delete resource ${ORTHANC_BASE_URL}${path}." >&2
     exit 1
   fi
 }
@@ -205,7 +205,7 @@ import sys
 path = sys.argv[1]
 payload = sys.stdin.read()
 if not payload:
-    raise SystemExit(f"Resposta vazia da API {path}.")
+    raise SystemExit(f"Empty response from API {path}.")
 
 try:
     data = json.loads(payload)
@@ -214,11 +214,11 @@ except json.JSONDecodeError as exc:
     if len(preview) > 160:
         preview = preview[:157] + "..."
     raise SystemExit(
-        f"Resposta invalida da API {path}: {exc}. Conteudo recebido: {preview!r}"
+        f"Invalid response from API {path}: {exc}. Received content: {preview!r}"
     )
 
 if not isinstance(data, list):
-    raise SystemExit(f"Resposta inesperada da API {path}.")
+    raise SystemExit(f"Unexpected response from API {path}.")
 
 for item in data:
     if isinstance(item, str):
@@ -239,7 +239,7 @@ import sys
 path = sys.argv[1]
 payload = sys.stdin.read()
 if not payload:
-    raise SystemExit(f"Resposta vazia da API {path}.")
+    raise SystemExit(f"Empty response from API {path}.")
 
 try:
     data = json.loads(payload)
@@ -248,11 +248,11 @@ except json.JSONDecodeError as exc:
     if len(preview) > 160:
         preview = preview[:157] + "..."
     raise SystemExit(
-        f"Resposta invalida da API {path}: {exc}. Conteudo recebido: {preview!r}"
+        f"Invalid response from API {path}: {exc}. Received content: {preview!r}"
     )
 
 if not isinstance(data, list):
-    raise SystemExit(f"Resposta inesperada da API {path}.")
+    raise SystemExit(f"Unexpected response from API {path}.")
 
 print(len(data))
   ' "$path" <<<"$json_payload"
@@ -275,8 +275,8 @@ base_url = sys.argv[1]
 payload = sys.stdin.read()
 if not payload:
     raise SystemExit(
-        f"Resposta vazia da API /system em {base_url}. "
-        "Esse endpoint deveria retornar JSON do Orthanc."
+        f"Empty response from API /system at {base_url}. "
+        "That endpoint should return Orthanc JSON."
     )
 
 try:
@@ -286,22 +286,22 @@ except json.JSONDecodeError as exc:
     if len(preview) > 160:
         preview = preview[:157] + "..."
     raise SystemExit(
-        f"Resposta invalida da API /system em {base_url}: {exc}. "
-        f"Conteudo recebido: {preview!r}"
+        f"Invalid response from API /system at {base_url}: {exc}. "
+        f"Received content: {preview!r}"
     )
 
 if not isinstance(data, dict):
-    raise SystemExit(f"Resposta inesperada da API /system em {base_url}.")
+    raise SystemExit(f"Unexpected response from API /system at {base_url}.")
 
 name = data.get("Name")
 version = data.get("Version")
 if not name or not version:
     raise SystemExit(
-        f"Resposta incompleta da API /system em {base_url}. "
-        "Campos esperados: Name e Version."
+        f"Incomplete response from API /system at {base_url}. "
+        "Expected fields: Name and Version."
     )
 
-print(f"Orthanc detectado: {name} {version}")
+print(f"Orthanc detected: {name} {version}")
   ' "$ORTHANC_BASE_URL" <<<"$system_json"
   then
     exit 1
@@ -322,29 +322,29 @@ fi
 study_count="${#STUDY_IDS[@]}"
 
 if [[ "$study_count" -eq 0 ]]; then
-  echo "Nenhum estudo encontrado em ${ORTHANC_BASE_URL}."
+  echo "No studies found at ${ORTHANC_BASE_URL}."
   exit 0
 fi
 
-echo "Orthanc alvo: ${ORTHANC_BASE_URL}"
-echo "Estudos encontrados: ${study_count}"
+echo "Target Orthanc: ${ORTHANC_BASE_URL}"
+echo "Studies found: ${study_count}"
 
 if [[ "$DRY_RUN" == "true" ]]; then
-  echo "Modo dry-run ativado. Nenhum estudo foi apagado."
+  echo "Dry-run mode enabled. No studies were deleted."
   exit 0
 fi
 
 if [[ "$ASSUME_YES" != "true" ]]; then
   if [[ ! -t 0 ]]; then
-    echo "Sessao nao interativa. Use --yes para confirmar a exclusao em massa." >&2
+    echo "Non-interactive session. Use --yes to confirm the mass deletion." >&2
     exit 1
   fi
 
   echo
-  echo "ATENCAO: esta operacao vai apagar TODOS os estudos do Orthanc."
-  read -r -p "Digite DELETE para continuar: " confirmation
+  echo "WARNING: this operation will delete ALL studies from Orthanc."
+  read -r -p "Type DELETE to continue: " confirmation
   if [[ "$confirmation" != "DELETE" ]]; then
-    echo "Operacao cancelada."
+    echo "Operation canceled."
     exit 1
   fi
 fi
@@ -352,7 +352,7 @@ fi
 deleted=0
 for study_id in "${STUDY_IDS[@]}"; do
   deleted=$((deleted + 1))
-  echo "Apagando estudo ${deleted}/${study_count}: ${study_id}"
+  echo "Deleting study ${deleted}/${study_count}: ${study_id}"
   api_delete "/studies/${study_id}"
 done
 
@@ -360,8 +360,8 @@ remaining_json="$(api_get "/studies")"
 remaining_count="$(parse_list_count "$remaining_json" "/studies")"
 
 if [[ "$remaining_count" != "0" ]]; then
-  echo "Exclusao concluida com pendencias. Estudos restantes: ${remaining_count}" >&2
+  echo "Deletion finished with pending items. Remaining studies: ${remaining_count}" >&2
   exit 1
 fi
 
-echo "Exclusao concluida. Todos os estudos foram removidos."
+echo "Deletion finished. All studies were removed."

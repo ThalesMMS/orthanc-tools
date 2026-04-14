@@ -114,7 +114,7 @@ PG_USER="${CFG[8]}"
 PG_PASS="${CFG[9]}"
 
 ok() { echo "[OK] $*"; }
-fail() { echo "[FALHA] $*" >&2; exit 1; }
+fail() { echo "[FAIL] $*" >&2; exit 1; }
 
 command -v curl >/dev/null 2>&1 || fail "curl is not installed."
 command -v jq >/dev/null 2>&1 || fail "jq is not installed."

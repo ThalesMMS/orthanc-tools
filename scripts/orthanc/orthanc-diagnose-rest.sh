@@ -4,23 +4,23 @@ IFS=$'\n\t'
 
 usage() {
   cat <<'USAGE'
-Uso:
-  sudo ./orthanc-diagnose-rest.sh [opcoes]
+Usage:
+  sudo ./orthanc-diagnose-rest.sh [options]
 
-Diagnostica o endpoint REST do Orthanc e mostra o que a URL configurada
-realmente esta retornando para /system e /studies.
+Diagnose the Orthanc REST endpoint and show what the configured URL is
+actually returning for /system and /studies.
 
-Opcoes:
-  --base-url URL             URL base do Orthanc. Ex.: http://127.0.0.1:8042
-  --user USUARIO             Usuario HTTP do Orthanc
-  --password SENHA           Senha HTTP do Orthanc
-  --config-dir DIR           Diretorio de configuracao. Padrao: /etc/orthanc
-  --orthanc-config ARQUIVO   Caminho explicito para o orthanc.json
-  --credentials-config ARQ   Caminho explicito para o credentials.json
-  --timeout SEGUNDOS         Timeout de cada chamada HTTP. Padrao: 15
-  -h, --help                 Mostra esta ajuda
+Options:
+  --base-url URL             Orthanc base URL, for example http://127.0.0.1:8042
+  --user USER                Orthanc HTTP user
+  --password PASSWORD        Orthanc HTTP password
+  --config-dir DIR           Configuration directory. Default: /etc/orthanc
+  --orthanc-config FILE      Explicit path to orthanc.json
+  --credentials-config FILE  Explicit path to credentials.json
+  --timeout SECONDS          Timeout for each HTTP request. Default: 15
+  -h, --help                 Show this help text
 
-Variaveis de ambiente equivalentes:
+Equivalent environment variables:
   ORTHANC_BASE_URL
   ORTHANC_ADMIN_USER
   ORTHANC_ADMIN_PASSWORD
@@ -29,16 +29,16 @@ Variaveis de ambiente equivalentes:
   ORTHANC_CREDENTIALS_CONFIG_FILE
   ORTHANC_TIMEOUT
 
-Exemplos:
+Examples:
   sudo ./orthanc-diagnose-rest.sh
   sudo ./orthanc-diagnose-rest.sh --base-url http://127.0.0.1:8043
-  sudo ./orthanc-diagnose-rest.sh --user admin --password 'sua-senha'
+  sudo ./orthanc-diagnose-rest.sh --user admin --password 'your-password'
 USAGE
 }
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
-    echo "Comando obrigatorio nao encontrado: $1" >&2
+    echo "Required command not found: $1" >&2
     exit 1
   }
 }
@@ -57,37 +57,37 @@ TIMEOUT="${ORTHANC_TIMEOUT:-15}"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --base-url)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --base-url" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --base-url" >&2; exit 1; }
       ORTHANC_BASE_URL="$2"
       shift 2
       ;;
     --user)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --user" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --user" >&2; exit 1; }
       ORTHANC_ADMIN_USER="$2"
       shift 2
       ;;
     --password)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --password" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --password" >&2; exit 1; }
       ORTHANC_ADMIN_PASSWORD="$2"
       shift 2
       ;;
     --config-dir)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --config-dir" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --config-dir" >&2; exit 1; }
       CONFIG_DIR="$2"
       shift 2
       ;;
     --orthanc-config)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --orthanc-config" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --orthanc-config" >&2; exit 1; }
       MAIN_CONFIG_FILE="$2"
       shift 2
       ;;
     --credentials-config)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --credentials-config" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --credentials-config" >&2; exit 1; }
       CREDENTIALS_CONFIG_FILE="$2"
       shift 2
       ;;
     --timeout)
-      [[ $# -ge 2 ]] || { echo "Faltou valor para --timeout" >&2; exit 1; }
+      [[ $# -ge 2 ]] || { echo "Missing value for --timeout" >&2; exit 1; }
       TIMEOUT="$2"
       shift 2
       ;;
@@ -96,7 +96,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     *)
-      echo "Opcao invalida: $1" >&2
+      echo "Invalid option: $1" >&2
       usage >&2
       exit 1
       ;;
@@ -126,12 +126,12 @@ with open(sys.argv[2], "r", encoding="utf-8") as handle:
 
 users = cred_cfg.get("RegisteredUsers", {})
 if not isinstance(users, dict) or not users:
-    raise SystemExit("RegisteredUsers ausente ou vazio em credentials.json.")
+    raise SystemExit("RegisteredUsers is missing or empty in credentials.json.")
 
 user = next(iter(users))
 password = users[user]
 if not isinstance(password, str):
-    raise SystemExit("Senha do Orthanc invalida em credentials.json.")
+    raise SystemExit("Invalid Orthanc password in credentials.json.")
 
 port = main_cfg.get("HttpPort", 8042)
 name = main_cfg.get("Name", "")
@@ -143,7 +143,7 @@ PY
   )
 
   if [[ ${#CFG[@]} -lt 4 ]]; then
-    echo "Nao foi possivel interpretar os arquivos de configuracao do Orthanc." >&2
+    echo "Could not parse the Orthanc configuration files." >&2
     exit 1
   fi
 
@@ -168,7 +168,7 @@ fi
 ORTHANC_BASE_URL="${ORTHANC_BASE_URL:-http://127.0.0.1:8042}"
 
 if [[ -z "$ORTHANC_ADMIN_USER" || -z "$ORTHANC_ADMIN_PASSWORD" ]]; then
-  echo "Credenciais nao informadas. Use --user/--password ou rode com sudo para ler /etc/orthanc." >&2
+  echo "Credentials not provided. Use --user/--password or run with sudo to read /etc/orthanc." >&2
   exit 1
 fi
 
@@ -204,7 +204,7 @@ data = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
 data = data.replace("\r", "")
 preview = " ".join(data.split())
 if not preview:
-    print("(vazio)")
+    print("(empty)")
 elif len(preview) > 300:
     print(preview[:297] + "...")
 else:
@@ -224,30 +224,30 @@ payload = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace"
 endpoint = sys.argv[2]
 
 if not payload:
-    print(f"JSON: corpo vazio em {endpoint}")
+    print(f"JSON: empty body at {endpoint}")
     raise SystemExit(1)
 
 try:
     data = json.loads(payload)
 except json.JSONDecodeError as exc:
-    print(f"JSON: invalido em {endpoint}: {exc}")
+    print(f"JSON: invalid in {endpoint}: {exc}")
     raise SystemExit(1)
 
 if isinstance(data, dict):
     keys = ", ".join(sorted(data.keys())[:12])
-    print(f"JSON: objeto com chaves: {keys}")
+    print(f"JSON: object with keys: {keys}")
     name = data.get("Name")
     version = data.get("Version")
     if endpoint == "/system":
       if name and version:
         print(f"Orthanc: {name} {version}")
       else:
-        print("Orthanc: campos Name/Version ausentes")
+        print("Orthanc: missing Name/Version fields")
         raise SystemExit(1)
 elif isinstance(data, list):
-    print(f"JSON: lista com {len(data)} item(ns)")
+    print(f"JSON: list with {len(data)} item(s)")
 else:
-    print(f"JSON: tipo inesperado {type(data).__name__}")
+    print(f"JSON: unexpected type {type(data).__name__}")
     raise SystemExit(1)
 PY
 }
@@ -268,7 +268,7 @@ probe_endpoint() {
   print_section "Endpoint ${endpoint}"
 
   if [[ "$curl_exit" -ne 0 ]]; then
-    echo "curl falhou com codigo ${curl_exit}."
+    echo "curl failed with code ${curl_exit}."
     echo "URL: ${ORTHANC_BASE_URL}${endpoint}"
     return 1
   fi
@@ -284,7 +284,7 @@ probe_endpoint() {
     echo "Headers:"
     sed 's/\r$//' "$header_file"
   else
-    echo "Headers: (nenhum header capturado)"
+    echo "Headers: (no headers captured)"
   fi
 
   echo "Preview:"
@@ -297,15 +297,15 @@ probe_endpoint() {
   return 0
 }
 
-print_section "Configuracao"
+print_section "Configuration"
 echo "Base URL: ${ORTHANC_BASE_URL}"
-echo "Usuario: ${ORTHANC_ADMIN_USER}"
+echo "User: ${ORTHANC_ADMIN_USER}"
 if [[ -n "${ORTHANC_NAME_EXPECTED:-}" ]]; then
-  echo "Nome esperado: ${ORTHANC_NAME_EXPECTED}"
+  echo "Expected name: ${ORTHANC_NAME_EXPECTED}"
 fi
 echo "Timeout: ${TIMEOUT}s"
 
-print_section "Servico"
+print_section "Service"
 if command -v systemctl >/dev/null 2>&1; then
   if systemctl is-active --quiet orthanc; then
     echo "orthanc.service: active"
@@ -313,16 +313,16 @@ if command -v systemctl >/dev/null 2>&1; then
     echo "orthanc.service: inactive"
   fi
 else
-  echo "systemctl indisponivel"
+  echo "systemctl unavailable"
 fi
 
-print_section "Porta"
+print_section "Port"
 if command -v ss >/dev/null 2>&1; then
   if ! ss -ltnp "( sport = :${TARGET_PORT} )"; then
-    echo "Nenhum listener encontrado na porta ${TARGET_PORT}."
+    echo "No listener found on port ${TARGET_PORT}."
   fi
 else
-  echo "ss indisponivel"
+  echo "ss unavailable"
 fi
 
 failure=0
@@ -330,12 +330,12 @@ failure=0
 probe_endpoint "/system" || failure=1
 probe_endpoint "/studies" || failure=1
 
-print_section "Resultado"
+print_section "Result"
 if [[ "$failure" -eq 0 ]]; then
-  echo "Diagnostico REST concluido sem erros."
+  echo "REST diagnosis completed without errors."
   exit 0
 fi
 
-echo "O endpoint REST nao respondeu como um Orthanc valido."
-echo "Se a porta/base URL estiverem corretas, verifique proxy reverso, autenticacao e a configuracao HTTP do Orthanc."
+echo "The REST endpoint did not respond like a valid Orthanc instance."
+echo "If the port and base URL are correct, check the reverse proxy, authentication, and Orthanc HTTP configuration."
 exit 1
