@@ -17,6 +17,14 @@ class OrthancApiError(RuntimeError):
         super().__init__(f"{method} {path} failed with HTTP {status}: {self.body}")
 
 
+class OrthancNetworkError(RuntimeError):
+    def __init__(self, method: str, path: str, reason: Any):
+        self.method = method
+        self.path = path
+        self.reason = reason
+        super().__init__(f"{method} {path} failed: {reason}")
+
+
 class OrthancRestClient:
     def __init__(self, base_url: str, username: str, password: str, timeout: float = 60.0):
         self.base_url = base_url
@@ -91,7 +99,7 @@ class OrthancRestClient:
             body = exc.read().decode("utf-8", errors="replace")
             raise OrthancApiError(method, path, exc.code, body) from exc
         except error.URLError as exc:
-            raise RuntimeError(f"{method} {path} failed: {exc.reason}") from exc
+            raise OrthancNetworkError(method, path, exc.reason) from exc
 
     def get(self, path: str, accept: str = "application/json") -> Any:
         return self.request("GET", path, accept=accept)

@@ -26,3 +26,4 @@ __pycache__/
 .env
 .env.*
 scripts/automation/*.local.*
+AGENTS.md
