@@ -98,6 +98,59 @@ class BackfillApp(RemoteStudyWorkflowMixin):
 
         return 130 if STOP_REQUESTED else 0
 
+    def dry_run(self) -> int:
+        self.check_remote_modality_for_dry_run()
+        print("")
+        print("Dry-run plan: backfill-by-date")
+        print(f"Orthanc REST: {self.client.settings.base_url} (user: {self.client.settings.username})")
+        print(
+            "Remote modality: "
+            f"{self.args.remote_name} -> {self.args.remote_aet}@{self.args.remote_host}:{self.args.remote_port}"
+        )
+        print(f"Date range: {self.args.start_date.isoformat()} to {self.args.end_date.isoformat()}")
+        print(f"State directory: {Path(self.args.state_dir).expanduser().resolve()}")
+        print(f"Whole-study threshold: {self.args.whole_study_threshold} missing instance(s)")
+        fallback = "enabled" if self.args.allow_heuristic_fallback else "disabled"
+        print(f"Heuristic fallback: {fallback} (allowance per series: {self.args.allowance_per_series})")
+        print("")
+        print("Remote inventory:")
+
+        total = 0
+        current = self.args.start_date
+        while current <= self.args.end_date:
+            if STOP_REQUESTED:
+                print("Stopped by request during dry-run")
+                return 130
+            studies = self.query_remote_day_studies(current)
+            total += len(studies)
+            label = "study" if len(studies) == 1 else "studies"
+            print(f"  {current.isoformat()}: {len(studies)} {label}")
+            if STOP_REQUESTED:
+                print("Stopped by request during dry-run")
+                return 130
+            current += dt.timedelta(days=1)
+
+        print(f"Total remote studies: {total}")
+        print("")
+        print("Real run would retrieve missing DICOM objects via C-GET/getscu and import them into Orthanc.")
+        print("Dry-run complete. No data was retrieved or state written.")
+        return 0
+
+    def check_remote_modality_for_dry_run(self) -> None:
+        self.state.log(f"Checking configured Orthanc modality {self.args.remote_name!r}")
+        modalities = self.client.list_modalities()
+        if self.args.remote_name not in modalities:
+            cli_error(
+                f"--dry-run is read-only and requires --remote-name {self.args.remote_name!r} "
+                "to already exist in Orthanc DicomModalities. Use an existing modality name "
+                "or run without --dry-run to let the workflow create/update the temporary modality."
+            )
+        self.client.echo_modality(self.args.remote_name, timeout=self.args.echo_timeout)
+        system = self.client.system()
+        name = safe_text(system.get("Name")) or "Orthanc"
+        version = safe_text(system.get("Version")) or "?"
+        self.state.log(f"Connected to {name} {version} at {self.client.settings.base_url}")
+
     def _day_query_fields(self, day: dt.date) -> dict[str, str]:
         return {
             "StudyDate": iso_to_dicom_date(day) + "-" + iso_to_dicom_date(day),
@@ -519,6 +572,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Keep cached remote manifests even after a day is complete.",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate connectivity and print the planned remote day inventory without retrieval or state writes.",
+    )
 
     args = parser.parse_args()
     if args.end_date is None:
@@ -544,6 +602,10 @@ def main() -> int:
 
     settings = load_orthanc_settings(args)
     client = OrthancClient(settings, timeout=60.0)
+    if args.dry_run:
+        app = BackfillApp(args, client, _DryRunState(Path(args.state_dir).resolve()))
+        return app.dry_run()
+
     state = StateManager(
         root=Path(args.state_dir).resolve(),
         start_date=args.start_date,
@@ -560,11 +622,19 @@ def main() -> int:
     return app.run()
 
 
+class _DryRunState:
+    def __init__(self, root: Path):
+        self.root = root
+
+    def log(self, message: str) -> None:
+        print(message)
+
+
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except OrthancApiError as exc:
         print(f"Orthanc API error: {exc}", file=sys.stderr)
-        raise SystemExit(1)
-    except KeyboardInterrupt:
-        raise SystemExit(130)
+        raise SystemExit(1) from exc
+    except KeyboardInterrupt as exc:
+        raise SystemExit(130) from exc

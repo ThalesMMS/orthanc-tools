@@ -133,6 +133,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Allow the run to succeed if the remote modality returns zero studies.",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate connectivity and print the planned inventory comparison without retrieval or deletes.",
+    )
     return parser.parse_args()
 
 
@@ -280,6 +285,54 @@ class OrthancMirrorApp(MirrorWorkflowMixin):
             return 3
         return 0
 
+    def dry_run(self) -> int:
+        try:
+            self.check_connectivity()
+            self.load_remote_inventory()
+            local_map = self.client.list_local_study_map()
+        finally:
+            if self.remote_query_id:
+                try:
+                    self.client.delete_query(self.remote_query_id)
+                except Exception:
+                    pass
+                self.remote_query_id = None
+
+        remote_uids = {study.study_uid for study in self.studies}
+        local_uids = set(local_map)
+        missing_locally = remote_uids - local_uids
+        extra_locally = local_uids - remote_uids
+        present_locally = remote_uids & local_uids
+        target_aet = self.args.target_aet or "-"
+        if self.args.retrieve_method == "get":
+            target_aet = "(not used for C-GET)"
+
+        print("")
+        print("Dry-run plan: sync-remote")
+        print(f"Orthanc REST: {self.client.settings.base_url}")
+        print(f"Remote modality: {self.remote_modality}")
+        print(f"Repair mode: {self.args.repair_mode}")
+        print(f"Retrieve method: {self.args.retrieve_method}")
+        print(f"Target AET: {target_aet}")
+        print("")
+        print("Inventory:")
+        print(f"  Remote studies: {len(remote_uids)}")
+        print(f"  Local studies: {len(local_uids)}")
+        print(f"  Present locally: {len(present_locally)}")
+        print(f"  Missing locally: {len(missing_locally)}")
+        print(f"  Extra local studies: {len(extra_locally)}")
+        print("")
+        print("Real run would compare inventories and retrieve studies missing from local Orthanc.")
+        if self.args.repair_mode == "replace":
+            print(
+                "WARNING: A real replace-mode run can delete drifted local studies before refill "
+                "and delete extra local studies not present on the remote modality."
+            )
+        else:
+            print("Retrieve mode would add missing data only and would not delete local studies.")
+        print("Dry-run complete. No data was retrieved or deleted.")
+        return 0
+
 def choose_remote_modality(client: OrthancClient, requested: str | None) -> str:
     modalities = client.list_modalities()
     if requested:
@@ -327,6 +380,9 @@ def main() -> int:
     settings = load_orthanc_settings(args)
     client = OrthancClient(settings, timeout=args.timeout)
     remote_modality = choose_remote_modality(client, args.remote)
+    if args.dry_run:
+        app = OrthancMirrorApp(args, client, remote_modality)
+        return app.dry_run()
     confirm_destructive_mode(args, remote_modality)
     app = OrthancMirrorApp(args, client, remote_modality)
     return app.run()

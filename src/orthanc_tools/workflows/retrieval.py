@@ -242,6 +242,11 @@ class RemoteStudyWorkflowMixin:
             self.state.log(f"Using cached remote study list for {day.isoformat()} ({len(cached)} studies)")
             return cached
 
+        result = self.query_remote_day_studies(day)
+        self.state.save_day_cache(day, result)
+        return result
+
+    def query_remote_day_studies(self, day: dt.date) -> list[RemoteStudy]:
         query_id: str | None = None
         try:
             query_id = self.client.create_remote_query(self.args.remote_name, "Study", self._day_query_fields(day))
@@ -255,7 +260,6 @@ class RemoteStudyWorkflowMixin:
                 seen.add(study.study_uid)
                 result.append(study)
             result.sort(key=lambda study: (study.study_date, study.patient_id, study.study_uid))
-            self.state.save_day_cache(day, result)
             self.state.log(f"Queried {len(result)} remote studies for {day.isoformat()}")
             return result
         finally:

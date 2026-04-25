@@ -8,3 +8,5 @@
 | `orthanc-export-local-by-date.py` | Yes | Local Orthanc | ZIP per study | Export an already local archive |
 
 Canonical entry point: `python3 -m orthanc_tools <subcommand>`.
+
+`python3` must resolve to Python 3.10 or newer. If your system `python3` is older, use an explicit supported interpreter such as `python3.11`.

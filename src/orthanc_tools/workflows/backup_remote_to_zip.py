@@ -128,6 +128,43 @@ class BackupZipApp(BackupZipMixin, RemoteStudyWorkflowMixin):
             current = self.state.get_next_date()
         return 130 if STOP_REQUESTED else 0
 
+    def dry_run(self) -> int:
+        self.prepare_remote_modality()
+        print("")
+        print("Dry-run plan: backup-remote-to-zip")
+        print(f"Orthanc REST: {self.client.settings.base_url} (user: {self.client.settings.username})")
+        print(
+            "Remote modality: "
+            f"{self.args.remote_name} -> {self.args.remote_aet}@{self.args.remote_host}:{self.args.remote_port}"
+        )
+        print(f"Date range: {self.args.start_date.isoformat()} to {self.args.end_date.isoformat()}")
+        print(f"Backup directory: {self.args.backup_dir}")
+        print(f"State directory: {self.args.state_dir}")
+        print(f"ZIP naming mode: {self.args.name}")
+        print(f"ZIP mode: {self.args.zip_mode}")
+        fallback = "enabled" if self.args.allow_heuristic_fallback else "disabled"
+        print(f"Heuristic fallback: {fallback} (allowance per series: {self.args.allowance_per_series})")
+        print("")
+        print("Remote inventory:")
+
+        total = 0
+        current = self.args.start_date
+        while current <= self.args.end_date:
+            studies = self.query_remote_day_studies(current)
+            total += len(studies)
+            label = "study" if len(studies) == 1 else "studies"
+            print(f"  {current.isoformat()}: {len(studies)} {label}")
+            current += dt.timedelta(days=1)
+
+        print(f"Total remote studies: {total}")
+        print("")
+        print(
+            "Real run would retrieve missing DICOM objects, create ZIP files, "
+            "and delete validated staging studies from local Orthanc."
+        )
+        print("Dry-run complete. No data was retrieved, ZIPs written, local studies deleted, or state written.")
+        return 0
+
     def _day_query_fields(self, day: dt.date) -> dict[str, str]:
         return {
             "StudyDate": iso_to_dicom_date(day) + "-" + iso_to_dicom_date(day),
@@ -591,6 +628,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Keep cached remote manifests even after a day is complete.",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate connectivity and print the planned remote day inventory without retrieval, ZIP writes, deletes, or state writes.",
+    )
 
     args = parser.parse_args()
     if args.end_date is None:
@@ -614,12 +656,17 @@ def main() -> int:
         if shutil.which(cmd) is None:
             cli_error(f"Required command not found: {cmd}")
 
+    settings = load_orthanc_settings(args)
+    client = OrthancClient(settings, timeout=60.0)
+    if args.dry_run:
+        app = BackupZipApp(args, client, _DryRunState(args.state_dir), None)
+        register_signal_handlers(handle_signal)
+        return app.dry_run()
+
     owner = default_owner()
     ensure_dir(args.backup_dir, owner)
     ensure_dir(args.state_dir, owner)
 
-    settings = load_orthanc_settings(args)
-    client = OrthancClient(settings, timeout=60.0)
     state = StateManager(
         root=args.state_dir,
         owner=owner,
@@ -639,6 +686,14 @@ def main() -> int:
     app = BackupZipApp(args, client, state, owner)
     register_signal_handlers(handle_signal)
     return app.run()
+
+
+class _DryRunState:
+    def __init__(self, root: Path):
+        self.root = root
+
+    def log(self, message: str) -> None:
+        print(message)
 
 
 if __name__ == "__main__":

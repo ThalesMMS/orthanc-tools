@@ -281,6 +281,11 @@ def parse_args() -> argparse.Namespace:
             "'stored' builds the ZIP locally with ZIP_STORED by downloading each instance."
         ),
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate connectivity and print local day inventory without exporting ZIPs or writing state.",
+    )
 
     args = parser.parse_args()
 
@@ -308,11 +313,43 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    owner = default_owner()
     settings = load_orthanc_settings(args)
     client = OrthancClient(settings)
+    if args.dry_run:
+        return dry_run(args, client)
+
+    owner = default_owner()
     app = ExportApp(args, client, owner)
     return app.run()
+
+
+def dry_run(args: argparse.Namespace, client: OrthancClient) -> int:
+    system = client.system()
+    print("Dry-run plan: export-local-to-zip")
+    print(f"Orthanc REST: {client.settings.base_url}")
+    print(f"Orthanc version: {system.get('Version', '?')}")
+    print(f"Date range: {args.start_date.isoformat()} to {args.end_date.isoformat()}")
+    print(f"Backup directory: {args.backup_dir}")
+    print(f"State directory: {args.state_dir}")
+    print(f"ZIP naming mode: {args.name}")
+    print(f"ZIP mode: {args.zip_mode}")
+    print("")
+    print("Local inventory:")
+
+    total = 0
+    current = args.start_date
+    while current <= args.end_date:
+        studies = client.find_studies_for_day(current, page_size=args.page_size)
+        total += len(studies)
+        label = "study" if len(studies) == 1 else "studies"
+        print(f"  {current.isoformat()}: {len(studies)} {label}")
+        current += timedelta(days=1)
+
+    print(f"Total local studies: {total}")
+    print("")
+    print("Real run would export existing local Orthanc studies to ZIP files.")
+    print("Dry-run complete. No ZIPs were written and no state was written.")
+    return 0
 
 
 if __name__ == "__main__":
