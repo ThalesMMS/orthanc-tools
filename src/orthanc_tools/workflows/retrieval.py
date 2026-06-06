@@ -299,7 +299,7 @@ class RemoteStudyWorkflowMixin:
         self._after_bootstrap_day_status(day, studies, status)
 
     def manifest_path(self, day: dt.date, study_uid: str) -> Path:
-        filename = hashlib.sha1(study_uid.encode("utf-8")).hexdigest() + ".json"
+        filename = hashlib.sha256(study_uid.encode("utf-8")).hexdigest() + ".json"
         return self.state.day_manifest_dir(day) / filename
 
     def load_or_fetch_remote_manifest(
@@ -532,9 +532,9 @@ class RemoteStudyWorkflowMixin:
         error_text: str,
         failure_count: int,
     ) -> dict[str, Any]:
-        study_hash = hashlib.sha1(study_uid.encode("utf-8")).hexdigest()
+        study_hash = hashlib.sha256(study_uid.encode("utf-8")).hexdigest()
         sop_uid = ids.get("sop_uid", "unknown-sop")
-        sop_hash = hashlib.sha1(sop_uid.encode("utf-8")).hexdigest()
+        sop_hash = hashlib.sha256(sop_uid.encode("utf-8")).hexdigest()
         target_dir = self.state.day_rejected_dir(day) / study_hash
         ensure_dir(target_dir, self._state_owner())
         target_dcm = target_dir / f"{sop_hash}.dcm"

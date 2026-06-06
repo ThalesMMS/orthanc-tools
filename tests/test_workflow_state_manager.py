@@ -242,10 +242,12 @@ class WorkflowStateManagerTests(unittest.TestCase):
             state.write_day_progress_tsv(day, studies, status)
             content = state.day_progress_tsv_path(day).read_text(encoding="utf-8")
 
-        self.assertIn("description", content)
+        self.assertNotIn("description", content)
         self.assertNotIn("zip_filename", content)
         self.assertIn("1.2.3", content)
-        self.assertIn("Alice", content)
+        self.assertNotIn("patient_id", content)
+        self.assertNotIn("patient_name", content)
+        self.assertNotIn("Alice", content)
 
     def test_state_manager_set_next_date_persists_to_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

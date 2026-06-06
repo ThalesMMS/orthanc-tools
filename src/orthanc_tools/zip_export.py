@@ -46,7 +46,7 @@ def ascii_slug(value: str, fallback: str = "UNKNOWN") -> str:
 def truncate_with_hash(text: str, limit: int = 180) -> str:
     if len(text) <= limit:
         return text
-    digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:12]
+    digest = hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
     head = max(16, limit - 13)
     return f"{text[:head]}_{digest}"
 
@@ -285,7 +285,11 @@ class BackupZipMixin:
 
         state["zip_bytes"] = final_zip.stat().st_size
         state["zip_validated_at"] = utc_now_iso()
-        state["zip_manifest_hash"] = safe_text(manifest.get("manifest_sha1", "")) if isinstance(manifest, dict) else ""
+        state["zip_manifest_hash"] = (
+            safe_text(manifest.get("manifest_sha256", manifest.get("manifest_sha1", "")))
+            if isinstance(manifest, dict)
+            else ""
+        )
         self.delete_local_if_present(day, study, state)
         return True
 
@@ -306,7 +310,7 @@ class BackupZipMixin:
         return True
 
     def rejected_study_dir(self, day: date, study_uid: str) -> Path:
-        study_hash = hashlib.sha1(study_uid.encode("utf-8")).hexdigest()
+        study_hash = hashlib.sha256(study_uid.encode("utf-8")).hexdigest()
         path = self.state.day_rejected_dir(day) / study_hash
         ensure_dir(path, self.owner)
         return path
@@ -368,7 +372,7 @@ class BackupZipMixin:
             raise RuntimeError("ZIP was created but its manifest did not validate against the current study state")
         state["zip_bytes"] = final_zip.stat().st_size
         state["zip_validated_at"] = utc_now_iso()
-        state["zip_manifest_hash"] = safe_text(manifest.get("manifest_sha1", "")) if manifest else ""
+        state["zip_manifest_hash"] = safe_text(manifest.get("manifest_sha256", manifest.get("manifest_sha1", ""))) if manifest else ""
         self.state.log(
             f"Created ZIP for study {study_label} -> {final_zip} "
             f"({format_size(state['zip_bytes'])}, zip phase {format_duration(time.monotonic() - started)})"
@@ -476,7 +480,7 @@ class BackupZipMixin:
                 for item in rejected_entries
             ],
         }
-        manifest["manifest_sha1"] = hashlib.sha1(
+        manifest["manifest_sha256"] = hashlib.sha256(
             json.dumps(manifest, sort_keys=True, ensure_ascii=False).encode("utf-8")
         ).hexdigest()
         return manifest

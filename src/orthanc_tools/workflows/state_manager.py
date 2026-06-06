@@ -35,14 +35,12 @@ SUMMARY_HEADER = (
     "rejected_instances\tupdated_at\n"
 )
 BACKFILL_PROGRESS_HEADER = (
-    "study_uid\tpatient_id\tpatient_name\tstudy_date\tdescription\tremote_series\t"
-    "remote_instances\tstatus\tmanifest_mode\tlocal_instances\trejected_instances\t"
+    "study_uid\tstudy_date\tremote_series\tremote_instances\tstatus\tmanifest_mode\tlocal_instances\trejected_instances\t"
     "accounted\tmissing\tlast_error\tlast_checked_at"
 )
 BACKUP_PROGRESS_HEADER = (
-    "study_uid\tpatient_id\tpatient_name\tstudy_date\tremote_series\tremote_instances\t"
-    "manifest_mode\taccounted\tmissing\tlocal_instances\trejected_instances\tzip_filename\t"
-    "zip_bytes\tbackup_complete\tstatus\tlast_error\tlast_checked_at"
+    "study_uid\tstudy_date\tremote_series\tremote_instances\tmanifest_mode\taccounted\tmissing\tlocal_instances\t"
+    "rejected_instances\tzip_filename\tzip_bytes\tbackup_complete\tstatus\tlast_error\tlast_checked_at"
 )
 
 
@@ -326,8 +324,6 @@ class StateManager:
             if self.is_backup:
                 fields = [
                     sanitize_tsv(study.study_uid),
-                    sanitize_tsv(study.patient_id),
-                    sanitize_tsv(study.patient_name),
                     sanitize_tsv(study.study_date),
                     str(nullable_int(study.remote_series_count)),
                     str(nullable_int(study.remote_instance_count)),
@@ -346,10 +342,7 @@ class StateManager:
             else:
                 fields = [
                     sanitize_tsv(study.study_uid),
-                    sanitize_tsv(study.patient_id),
-                    sanitize_tsv(study.patient_name),
                     sanitize_tsv(study.study_date),
-                    sanitize_tsv(study.description),
                     str(nullable_int(study.remote_series_count)),
                     str(nullable_int(study.remote_instance_count)),
                     sanitize_tsv(safe_text(s.get("status", "pending"))),

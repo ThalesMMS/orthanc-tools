@@ -8,6 +8,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+PRIVATE_DIR_MODE = 0o700
+PRIVATE_FILE_MODE = 0o600
+
 
 @dataclass(frozen=True)
 class Ownership:
@@ -47,6 +50,10 @@ def maybe_chown(path: Path, owner: Ownership | None) -> None:
 
 def ensure_directory(path: Path, owner: Ownership | None = None) -> None:
     path.mkdir(parents=True, exist_ok=True)
+    try:
+        path.chmod(PRIVATE_DIR_MODE)
+    except OSError:
+        pass
     maybe_chown(path, owner)
 
 
@@ -61,6 +68,10 @@ def atomic_write_text(path: Path, content: str, owner: Ownership | None = None) 
         handle.write(content)
         handle.flush()
         os.fsync(handle.fileno())
+    try:
+        tmp.chmod(PRIVATE_FILE_MODE)
+    except OSError:
+        pass
     os.replace(tmp, path)
     maybe_chown(path, owner)
 
@@ -73,6 +84,10 @@ def atomic_write_json(path: Path, payload: Any, owner: Ownership | None = None) 
         handle.write("\n")
         handle.flush()
         os.fsync(handle.fileno())
+    try:
+        tmp.chmod(PRIVATE_FILE_MODE)
+    except OSError:
+        pass
     os.replace(tmp, path)
     maybe_chown(path, owner)
 
@@ -83,6 +98,10 @@ def append_text(path: Path, text: str, owner: Ownership | None = None) -> None:
         handle.write(text)
         handle.flush()
         os.fsync(handle.fileno())
+    try:
+        path.chmod(PRIVATE_FILE_MODE)
+    except OSError:
+        pass
     maybe_chown(path, owner)
 
 

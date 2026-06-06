@@ -385,7 +385,7 @@ class BackupZipMixinTests(unittest.TestCase):
         self.assertTrue(mixin._study_state_uses_heuristic({"manifest_mode": "heuristic"}))
         self.assertFalse(mixin._study_state_uses_heuristic({"status": "complete", "manifest_mode": "exact"}))
 
-    def test_build_backup_manifest_includes_sha1_hash(self) -> None:
+    def test_build_backup_manifest_includes_sha256_hash(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             mixin = self.make_mixin(tmpdir, zip_mode="archive")
             mixin.args.name = "patient"
@@ -402,14 +402,14 @@ class BackupZipMixinTests(unittest.TestCase):
 
             manifest = mixin.build_backup_manifest(date(2024, 1, 1), study, state, rejected_entries=[])
 
-        self.assertIn("manifest_sha1", manifest)
+        self.assertIn("manifest_sha256", manifest)
         self.assertEqual(manifest["script"], "backup_remote_to_zip.py")
         self.assertEqual(manifest["study_uid"], study.study_uid)
         self.assertTrue(manifest["backup_complete"])
         self.assertEqual(manifest["rejected_count"], 0)
-        sha1 = manifest["manifest_sha1"]
-        self.assertIsInstance(sha1, str)
-        self.assertEqual(len(sha1), 40)
+        sha256 = manifest["manifest_sha256"]
+        self.assertIsInstance(sha256, str)
+        self.assertEqual(len(sha256), 64)
 
     def test_backup_day_dir_creates_expected_directory_structure(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

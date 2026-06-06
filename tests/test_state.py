@@ -1,4 +1,5 @@
 import json
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,8 @@ class StateTests(unittest.TestCase):
             path = Path(temp_dir) / "sample.txt"
             atomic_write_text(path, "hello\n")
             self.assertEqual(path.read_text(encoding="utf-8"), "hello\n")
+            self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+            self.assertEqual(stat.S_IMODE(path.parent.stat().st_mode), 0o700)
 
     def test_atomic_write_json_round_trips(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
